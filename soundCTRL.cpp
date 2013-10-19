@@ -21,13 +21,16 @@ void
 SoundCTRL::setView(Ui_meta *view)
 {
 	this->view = view;
-	connect(view, SIGNAL(playSound()), this, SLOT(tocaOUpara()));
-	connect(view, SIGNAL(pauseSound()), this, SLOT(tocaOUpara()));
+	connect(view, SIGNAL(playSound()), this, SLOT(playOrPauseCTRL()));
+	connect(view, SIGNAL(pauseSound()), this, SLOT(playOrPauseCTRL()));
 	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(playOrPause()));
+	
+	connect(view, SIGNAL(nextMark(uint32_t, Format*)), this, SLOT(forward(uint32_t, Format*)));
+	
 }
 
 void 
-SoundCTRL::tocaOUpara()
+SoundCTRL::playOrPauseCTRL()
 {
 	cout << "[Toca ou para] playing = " << playing << endl;
 
@@ -35,7 +38,6 @@ SoundCTRL::tocaOUpara()
 		sound->m_position = 0;
 	
 	playing ^= 1;
-
 	SDL_PauseAudio(playing);
 }
 
@@ -43,7 +45,7 @@ void
 SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 {    
 	memset(audio, 0, length);
-
+	
 	Sound *sound = (Sound *) userdata;
 
 	if (sound->m_position == -1)
@@ -53,8 +55,6 @@ SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 	{
 		cout << "-----------------------------" << endl;
 		cout << "ACABOU..." << endl;
-		cout << "MUDAR IMAGEM..." << endl;
-		cout << "COLOCAR  playing = false" << endl;
 
 		sound->m_position = -1;
 
@@ -93,10 +93,14 @@ SoundCTRL::rewind()
 {
 	
 }
+*/
 
 void 
-SoundCTRL::forward()
+SoundCTRL::forward(uint32_t timeInSeconds, Format *format)
 {
+	cout << "control: " << timeInSeconds << endl;
+	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
 	
+	sound->m_position = position;
 }
-*/
+

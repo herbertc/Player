@@ -6,6 +6,7 @@
 #include "generic.h"
 #include "wave.h"
 #include "meta.h"
+#include "lgmk.h"
 
 class Ui_meta : public QObject, public Ui_Player
 {
@@ -13,16 +14,21 @@ class Ui_meta : public QObject, public Ui_Player
 
 public slots:
 	void playOrPause();
-	void reset();
+	
+	//void reset();
 
 	//void fastForward();
 	//void fastRewind();
 	//void rewind();
-	//void forward();
+	void forward();
 
 signals:
 	void playSound();
 	void pauseSound();
+	
+	void nextMark(uint32_t timeInSeconds, Format *format);
+		
+	void remove();
 
 public:
 	Ui_meta(const char *path);
@@ -32,9 +38,12 @@ public:
 	
 	Wave *wave;
 	Meta *meta;
+	Lgmk *lgmk;
+	Format *format;
 	
-//	SoundCTRL *CTRL;
-	//bool playing;
+	QIcon icon;
+private:
+	int markIndex;
 };
 
 

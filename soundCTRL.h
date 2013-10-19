@@ -8,6 +8,7 @@
 
 #include "sound.h"
 #include "ui_meta.h"
+#include "lgmk.h"
 
 
 using namespace std;
@@ -17,8 +18,9 @@ class SoundCTRL : public QObject
 	 Q_OBJECT
 	 
 public slots:
-	void tocaOUpara();
-
+	void playOrPauseCTRL();
+	void forward(uint32_t timeInSeconds, Format *format);
+		
 signals:
 	void soundPlayed();
 
@@ -32,13 +34,14 @@ public:
 	//void fastForward();
 	//void fastRewind();
 	//void rewind();
-	//void forward();
+	//
 
 	
 public:
 	int playing;
 	Ui_meta *view;
 	Sound *sound;
+	
 };
 
 

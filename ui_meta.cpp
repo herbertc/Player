@@ -3,14 +3,45 @@
 Ui_meta::Ui_meta(const char *path)
 {
 	playing = true;
+	markIndex = -1;
 	wave = Wave::load(path);
-//	CTRL = new SoundCTRL;
+	
+	vector<Chunk *> subchunks = wave->subchunks();
+	
+	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
+	{
+		lgmk = dynamic_cast<Lgmk *>(*it);
+		
+		if(lgmk != 0)
+			break;
+	}
+	
+	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
+	{
+		format = dynamic_cast<Format *>(*it);
+		
+		if(format != 0)
+			break;
+	}
+	
 }
 
 void 
 Ui_meta::setLabels()
 {
-	meta = (Meta *) wave->subchunks()[4];
+	
+	vector<Chunk *> subchunks = wave->subchunks();
+	
+	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
+	{
+		meta = dynamic_cast<Meta *>(*it);
+		
+		if(meta != 0)
+			break;
+	}
+	
+	if(meta == 0)
+		return;
 	
 	QString title = QString::fromStdString(meta->title());
 	QString author = QString::fromStdString(meta->author());
@@ -27,14 +58,14 @@ Ui_meta::setLabels()
 	yearLabel->setText(year);
 	addressLabel->setText(address);
 	pagesLabel->setText(pages);
-
-
 }
 
 void
 Ui_meta::connections()
 {
 	connect(playOrPauseButton, SIGNAL(clicked()), this, SLOT(playOrPause()));
+	connect(forwardButton,SIGNAL(clicked()), this, SLOT(forward()));
+	//connect(removeMarkButton, SIGNAL(clicked()), this SLOT(playOrPause()));
 	
 	/*connect(forwardButton, SIGNAL(clicked()), this, SLOT(forward()));
 	connect(rewindButton, SIGNAL(clicked()), this, SLOT(rewind()));
@@ -47,7 +78,6 @@ Ui_meta::connections()
 void
 Ui_meta::playOrPause()
 {
-    QIcon icon;
 	cout << "[Play or pause] pĺaying = " << playing << endl;
 
    	if(playing)
@@ -63,11 +93,12 @@ Ui_meta::playOrPause()
 		emit playSound();
 	}
 
-    playOrPauseButton->setIcon(icon);
+	playOrPauseButton->setIcon(icon);
    	playing = !playing; 
 }
 
-void 
+
+/*void 
 Ui_meta::reset()
 {		
 	QIcon icon;
@@ -75,7 +106,7 @@ Ui_meta::reset()
 	icon.addFile(QString::fromUtf8(":/images/start.png"), QSize(), QIcon::Normal, QIcon::Off);
 
     playOrPauseButton->setIcon(icon);
-}
+}*/
 
 /*
 
@@ -121,11 +152,21 @@ Ui_meta::rewind()
 {
     cout << "REWIND" << endl;
 }
+*/
 
 void
 Ui_meta::forward()
 {
-    cout << "FORWARD" << endl;
+    markIndex++;
+    cout <<"forward slot: " << markIndex <<endl;
+	
+    if(markIndex >= lgmk->marks().size())
+    {
+	    markIndex = lgmk->marks().size();
+	    //TODO:calcular o tamanho da wave em segundos e emitir sinal para o fim do arquivo
+    }else
+    {
+	    emit nextMark(lgmk->marks()[markIndex], format);
+    }
+	    
 }
-
-*/

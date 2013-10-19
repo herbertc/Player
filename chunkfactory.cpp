@@ -2,6 +2,7 @@
 #include "generic.h"
 #include "meta.h"
 #include "format.h"
+#include "lgmk.h"
 
 Chunk * 
 ChunkFactory::decode(const Data& data, uint32_t *decoded, uint32_t offset)
@@ -20,7 +21,10 @@ ChunkFactory::decode(const Data& data, uint32_t *decoded, uint32_t offset)
 	} else if(memcmp(id, "fmt ", 4) == 0)
 	{
 		chunk = new Format();
-	} else
+	} else if(memcmp(id, "LGMK", 4) == 0)
+	{
+		chunk = new Lgmk();
+	}else
 	{
 		chunk = new Generic();
 	}

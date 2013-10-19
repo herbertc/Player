@@ -69,6 +69,7 @@ Format::encode() const
 
 	Data *data = new Data();
 	data->set(bytes, total_size);
+	
 
 	return data;
 }
@@ -110,6 +111,9 @@ Format::decode(const Data& data, uint32_t offset)
 	 
 	memcpy(&m_bitsperSample, iterator + decoded, 2);
 	decoded += 2;
+	
+    //if(data.size()-16 > 0)
+        //decoded += (data.size()-16);
 
 	return decoded;	
 }

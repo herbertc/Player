@@ -20,7 +20,8 @@ HEADERS += chunk.h \
            sounddevice.h \
            ui_meta.h \
            wave.h \
-           soundCTRL.h 
+           soundCTRL.h \
+           lgmk.h
 FORMS += player.ui
 SOURCES += chunkfactory.cpp \
            data.cpp \
@@ -33,5 +34,6 @@ SOURCES += chunkfactory.cpp \
            sounddevice.cpp \
            ui_meta.cpp \
            wave.cpp \
-           soundCTRL.cpp 
+           soundCTRL.cpp \
+           lgmk.cpp
 RESOURCES += resource.qrc

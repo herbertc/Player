@@ -27,6 +27,7 @@ public:
 	static const uint32_t size;
 
 	void add_chunk(Chunk *chunk);
+	void remove_chunk(Chunk *chunk);
 	
 	SDL_AudioSpec spec() const;
 	Generic *data() const;
