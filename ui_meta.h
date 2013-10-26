@@ -21,8 +21,12 @@ public slots:
 
 	//void fastForward();
 	//void fastRewind();
-	void rewind();
-	void forward();
+	
+	void next();
+	void prev();
+	
+	void levelUp();
+	void levelDown();
 
 signals:
 	void playSound();
@@ -40,6 +44,21 @@ public:
 	void connections();
 	bool playing;
 	
+	void rewind();
+	void forward();
+	
+	void forwardSubMark();
+	void rewindSubMark();
+	
+	void synchronizeMarks();
+	
+	
+private:
+	int markIndex;
+	int subMarkIndex;
+	
+	int level;
+	
 	Wave *wave;
 	Meta *meta;
 	Lgmk *lgmk;
@@ -47,9 +66,6 @@ public:
 	Format *format;
 	
 	QIcon icon;
-private:
-	int markIndex;
-	int subMarkIndex;
 };
 
 

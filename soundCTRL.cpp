@@ -94,7 +94,7 @@ SoundCTRL::fastRewind()
 void 
 SoundCTRL::rewind(uint32_t timeInSeconds, Format *format)
 {
-	cout << "control: " << timeInSeconds << endl;
+	cout << "rewind control: " << timeInSeconds << endl;
 	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
 	
 	sound->m_position = position;
@@ -104,7 +104,7 @@ SoundCTRL::rewind(uint32_t timeInSeconds, Format *format)
 void 
 SoundCTRL::forward(uint32_t timeInSeconds, Format *format)
 {
-	cout << "control: " << timeInSeconds << endl;
+	cout << "forward control: " << timeInSeconds << endl;
 	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
 	
 	sound->m_position = position;
