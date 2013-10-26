@@ -23,10 +23,12 @@ int main(int argc, char *argv[])
 
 	QApplication app(argc, argv);
 	Player w;
+	w.setFixedSize(w.size());
 	
 	Ui_meta *uim = new Ui_meta(path);
 	uim->setupUi(&w);
-	uim->setLabels();
+	uim->setMetaLabels();
+	uim->setMarksLabels();
 	uim->connections();
 
 	//----------------------------------------------------

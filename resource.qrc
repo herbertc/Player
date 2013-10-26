@@ -3,6 +3,7 @@
 		<qresource>
                         <file>images/add.png</file>
                         <file>images/backward.png</file>
+                        <file>images/down.png</file>
                         <file>images/eject.png</file>
                         <file>images/forward.png</file>
                         <file>images/pause.png</file>
@@ -12,5 +13,6 @@
                         <file>images/seek-forward.png</file>
                         <file>images/start.png</file>
                         <file>images/stop.png</file>
+                        <file>images/up.png</file>
 		</qresource>
 	</RCC>

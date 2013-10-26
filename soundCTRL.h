@@ -20,6 +20,7 @@ class SoundCTRL : public QObject
 public slots:
 	void playOrPauseCTRL();
 	void forward(uint32_t timeInSeconds, Format *format);
+	void rewind(uint32_t timeInSeconds, Format *format);
 		
 signals:
 	void soundPlayed();
@@ -33,9 +34,6 @@ public:
 	static void callback(void *userdata, uint8_t *stream, int len);
 	//void fastForward();
 	//void fastRewind();
-	//void rewind();
-	//
-
 	
 public:
 	int playing;

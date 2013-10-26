@@ -8,18 +8,20 @@
 #include "meta.h"
 #include "lgmk.h"
 
+
 class Ui_meta : public QObject, public Ui_Player
 {
 	Q_OBJECT
 
 public slots:
 	void playOrPause();
+	void resetMarkLabels();
 	
 	//void reset();
 
 	//void fastForward();
 	//void fastRewind();
-	//void rewind();
+	void rewind();
 	void forward();
 
 signals:
@@ -27,23 +29,27 @@ signals:
 	void pauseSound();
 	
 	void nextMark(uint32_t timeInSeconds, Format *format);
+	void prevMark(uint32_t timeInSeconds, Format *format);
 		
 	void remove();
 
 public:
 	Ui_meta(const char *path);
-	void setLabels();
+	void setMetaLabels();
+	void setMarksLabels();
 	void connections();
 	bool playing;
 	
 	Wave *wave;
 	Meta *meta;
 	Lgmk *lgmk;
+	//WaveData *data;
 	Format *format;
 	
 	QIcon icon;
 private:
 	int markIndex;
+	int subMarkIndex;
 };
 
 

@@ -24,9 +24,10 @@ SoundCTRL::setView(Ui_meta *view)
 	connect(view, SIGNAL(playSound()), this, SLOT(playOrPauseCTRL()));
 	connect(view, SIGNAL(pauseSound()), this, SLOT(playOrPauseCTRL()));
 	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(playOrPause()));
+	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(resetMarkLabels()));
 	
 	connect(view, SIGNAL(nextMark(uint32_t, Format*)), this, SLOT(forward(uint32_t, Format*)));
-	
+	connect(view, SIGNAL(prevMark(uint32_t, Format*)), this, SLOT(rewind(uint32_t, Format*)));
 }
 
 void 
@@ -54,7 +55,7 @@ SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 	if (sound->m_position >= sound->size())
 	{
 		cout << "-----------------------------" << endl;
-		cout << "ACABOU..." << endl;
+		cout << "ACABOU...A MUSICA!!!" << endl;
 
 		sound->m_position = -1;
 
@@ -87,13 +88,18 @@ SoundCTRL::fastRewind()
 {
 	
 }
+*/
+
 
 void 
-SoundCTRL::rewind()
+SoundCTRL::rewind(uint32_t timeInSeconds, Format *format)
 {
+	cout << "control: " << timeInSeconds << endl;
+	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
+	
+	sound->m_position = position;
 	
 }
-*/
 
 void 
 SoundCTRL::forward(uint32_t timeInSeconds, Format *format)

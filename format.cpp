@@ -25,7 +25,6 @@ Format::encode() const
 	
 	uint8_t *bytes = new uint8_t[total_size];
 	
-	
 	if (bytes == 0)
 		return 0;
 	
