@@ -6,6 +6,9 @@
 #include <SDL/SDL.h>
 #include <iostream>
 
+//#include <thread>
+#include <pthread.h>
+
 #include "sound.h"
 #include "ui_meta.h"
 #include "lgmk.h"
@@ -21,9 +24,15 @@ public slots:
 	void playOrPauseCTRL();
 	void forward(uint32_t timeInSeconds, Format *format);
 	void rewind(uint32_t timeInSeconds, Format *format);
+	
+	void fastForward(Format *format);
+	void fastRewind(Format *format);
 		
 signals:
 	void soundPlayed();
+	
+	void changeAllMarks();
+	
 
 public:
 	SoundCTRL();
@@ -32,13 +41,15 @@ public:
 	void setSound(Sound *sound);
 
 	static void callback(void *userdata, uint8_t *stream, int len);
-	//void fastForward();
-	//void fastRewind();
 	
+	void changeLabels();
 public:
 	int playing;
 	Ui_meta *view;
 	Sound *sound;
+	
+private:
+	int timeInSeconds;
 	
 };
 

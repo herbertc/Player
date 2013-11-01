@@ -16,17 +16,17 @@ class Ui_meta : public QObject, public Ui_Player
 public slots:
 	void playOrPause();
 	void resetMarkLabels();
-	
-	//void reset();
 
-	//void fastForward();
-	//void fastRewind();
+	void fastForward();
+	void fastRewind();
 	
 	void next();
 	void prev();
 	
 	void levelUp();
 	void levelDown();
+	
+	void changeMarksLabels();
 
 signals:
 	void playSound();
@@ -34,7 +34,10 @@ signals:
 	
 	void nextMark(uint32_t timeInSeconds, Format *format);
 	void prevMark(uint32_t timeInSeconds, Format *format);
-		
+	
+	void forwardTime(Format *format);
+	void rewindTime(Format *format);
+	
 	void remove();
 
 public:
@@ -52,17 +55,33 @@ public:
 	
 	void synchronizeMarks();
 	
+	int MarkIndex() const;
+	int SubMarkIndex() const;
 	
+	void setMarkIndex(int newMarkIndex);
+	void setSubMarkIndex(int newSubMarkIndex);
+	
+	Lgmk *getLgmk() const;
+	
+	Format *getFormat() const;
+	
+	vector<uint32_t> marks() const;
+	vector<uint32_t> subMarks() const;
 private:
 	int markIndex;
 	int subMarkIndex;
 	
+	vector<uint32_t> m_marks;
+	vector<string> m_marksNames;
+	
+	vector<uint32_t> m_subMarks;
+	vector<string> m_subMarksNames;
 	int level;
 	
 	Wave *wave;
 	Meta *meta;
 	Lgmk *lgmk;
-	//WaveData *data;
+	uint32_t duration;
 	Format *format;
 	
 	QIcon icon;

@@ -4,11 +4,12 @@ Ui_meta::Ui_meta(const char *path)
 {
 	playing = true;
 	
-	markIndex = -1;
-	subMarkIndex = -1;
-	
+	markIndex = 0;
+	subMarkIndex = 0;
 	level = 1;
 	
+	duration = 0;
+
 	wave = Wave::load(path);
 	
 	cout << wave <<endl;
@@ -23,14 +24,23 @@ Ui_meta::Ui_meta(const char *path)
 			break;
 	}
 	
-	/*for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
-	{
-		data = dynamic_cast<WaveData *>(*it);
-		
-		if(data != 0)
-			break;
-	}*/
+	m_marks = lgmk->marks();
+	m_marksNames = lgmk->marksNames();
 	
+	m_subMarks = lgmk->subMarks();
+	m_subMarksNames = lgmk->subMarksNames();
+	
+	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
+	{
+		Generic *data = dynamic_cast<Generic *>(*it);
+		
+		if(data != 0 && data->id() == "data")
+		{
+			duration = data->size();
+			break;
+		}
+			
+	}
 	
 	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
 	{
@@ -39,6 +49,9 @@ Ui_meta::Ui_meta(const char *path)
 		if(format != 0)
 			break;
 	}	
+	
+	duration /= (format->sampleRate() * format->numChannels());
+	duration /= (format->bitsPerSample()/8);
 }
 
 void 
@@ -78,11 +91,11 @@ Ui_meta::setMetaLabels()
 void 
 Ui_meta::setMarksLabels()
 {
-	QString firstMark = QString::fromStdString(lgmk->marksNames()[0]);
+	QString firstMark = QString::fromStdString(m_marksNames[0]);
 	markLabel->setText(firstMark);
 	markLabel->setAlignment(Qt::AlignCenter);
 	
-	QString firstSubMark  = QString::fromStdString(lgmk->subMarksNames()[0]);
+	QString firstSubMark  = QString::fromStdString(m_subMarksNames[0]);
 	
 	subMarkLabel->setText(firstSubMark);
 	subMarkLabel->setAlignment(Qt::AlignCenter);
@@ -99,13 +112,10 @@ Ui_meta::connections()
 	connect(upLevelButton, SIGNAL(clicked()), this, SLOT(levelUp()));
 	connect(downLevelButton, SIGNAL(clicked()), this, SLOT(levelDown()));
 	
-	//connect(removeMarkButton, SIGNAL(clicked()), this SLOT(playOrPause()));
+	connect(fastforwardButton, SIGNAL(pressed()), this, SLOT(fastForward()));
 	
-	/*connect(forwardButton, SIGNAL(clicked()), this, SLOT(forward()));
-	connect(rewindButton, SIGNAL(clicked()), this, SLOT(rewind()));
-
-	connect(fastforwardButton, SIGNAL(clicked()), this, SLOT(fastForward()));
-	connect(fastrewindButton, SIGNAL(clicked()), this, SLOT(fastRewind()));*/
+	connect(fastrewindButton, SIGNAL(pressed()) , this, SLOT(fastRewind()));
+	
 }
 
 
@@ -134,14 +144,14 @@ Ui_meta::playOrPause()
 void 
 Ui_meta::resetMarkLabels()
 {
-	markIndex = -1;
-	subMarkIndex = -1;
+	markIndex = 0;
+	subMarkIndex = 0;
 	
-	QString firstMark = QString::fromStdString(lgmk->marksNames()[0]);
+	QString firstMark = QString::fromStdString(m_marksNames[0]);
 	markLabel->setText(firstMark);
 	markLabel->setAlignment(Qt::AlignCenter);
 	
-	QString firstSubMark  = QString::fromStdString(lgmk->subMarksNames()[0]);
+	QString firstSubMark  = QString::fromStdString(m_subMarksNames[0]);
 	
 	subMarkLabel->setText(firstSubMark);
 	subMarkLabel->setAlignment(Qt::AlignCenter);
@@ -161,20 +171,23 @@ Ui_meta::levelDown()
 	cout << "NIVEL "<< level << endl;
 }
 
-/*
+
 void
 Ui_meta::fastForward()
 {
-    cout << "FAST FORWARD" << endl;
+	cout << "FAST FORWARD" << endl;
+		
+	emit forwardTime(format);
 }
+
 
 void
 Ui_meta::fastRewind()
 {
-    cout << "FAST REWIND" << endl;
+	cout << "FAST REWIND" << endl;
+	
+	emit rewindTime(format);
 }
-
-*/
 
 void
 Ui_meta::next()
@@ -194,6 +207,7 @@ Ui_meta::next()
 void
 Ui_meta::prev()
 {
+	cout << "NIVEL "<< level << endl;
 	if(level == 1)
 	{
 		rewind();
@@ -201,11 +215,7 @@ Ui_meta::prev()
 	{
 		rewindSubMark();
 	}
-	
-	//cout <<"prev()"<< endl;
-	//cout << "\tmarkIndex: " << markIndex << endl;
- 	//cout << "\tsubMarkIndex;: " << subMarkIndex << endl;
-	
+		
 	synchronizeMarks();
 }
 
@@ -215,17 +225,15 @@ Ui_meta::forward()
 	markIndex++;
 	cout << "(forward) markIndex: " << markIndex <<endl;
 	
-	if(markIndex >= lgmk->marks().size() - 1)
+	if(markIndex >= (int) m_marks.size())
 	{
-		//markIndex = lgmk->marks().size() - 1;
 		resetMarkLabels();
 		
-		//TODO:calcular o tamanho da wave em segundos e emitir sinal para o fim do arquivo
-		emit nextMark(304, format);
+		emit nextMark(duration, format);
 		
 	}else
 	{
-		emit nextMark(lgmk->marks()[markIndex + 1], format);
+		emit nextMark(m_marks[markIndex], format);
 	}
 }
 
@@ -239,13 +247,13 @@ Ui_meta::rewind()
 	
 	if(markIndex < 0)
 	{
-		markIndex = -1;
-		subMarkIndex = -1;
+		markIndex = 0;
+		subMarkIndex = 0;
 		
 		emit prevMark(0, format);
 	}else
 	{
-		emit prevMark(lgmk->marks()[markIndex + 1], format);
+		emit prevMark(m_marks[markIndex], format);
 	}
 }
 
@@ -255,17 +263,15 @@ Ui_meta::forwardSubMark()
 	subMarkIndex++;
 	cout << "(forward SubMark) subMarkIndex: " << subMarkIndex <<endl;
 	
-	if(subMarkIndex >= lgmk->subMarks().size() - 1)
+	if(subMarkIndex >= (int) m_subMarks.size())
 	{
-		//subMarkIndex = lgmk->subMarks().size();
 		resetMarkLabels();
-	    
-		//TODO:calcular o tamanho da wave em segundos e emitir sinal para o fim do arquivo
-		emit nextMark(304, format);
+
+		emit nextMark(duration, format);
 		
 	}else
 	{
-		emit nextMark(lgmk->subMarks()[subMarkIndex + 1], format);
+		emit nextMark(m_subMarks[subMarkIndex], format);
 	}
 }
 
@@ -279,14 +285,14 @@ Ui_meta::rewindSubMark()
 	
 	if(subMarkIndex < 0)
 	{
-		markIndex = -1;
-		subMarkIndex = -1;
+		markIndex = 0;
+		subMarkIndex = 0;
 	    
 		emit prevMark(0, format);
 		
 	}else
 	{
-		emit prevMark(lgmk->subMarks()[subMarkIndex + 1], format);
+		emit prevMark(m_subMarks[subMarkIndex], format);
 	}
 }
 
@@ -302,35 +308,34 @@ Ui_meta::synchronizeMarks()
 	{
 		cout << "SINCRONIZACÃO NIVEL 1!!!!" << endl;
 		
-		position = lgmk->marks()[markIndex+1];
+		position = m_marks[markIndex];
 		
-		for(uint32_t i = 0; i < lgmk->subMarks().size(); i++)
+		for(uint32_t i = 0; i < m_subMarks.size(); i++)
 		{
 			if(position == 0)
 			{
-				subMarkIndex = -1;
-				
+				subMarkIndex = 0;
 				break;
-			}else if(lgmk->subMarks()[i] == position)
+			}else if(m_subMarks[i] == position)
 			{
-				subMarkIndex = i - 1;
+				subMarkIndex = i;
 		
 				break;
-			}else if(lgmk->subMarks()[i] > position)
+			}else if(m_subMarks[i] > position)
 			{
-				// - 1
-				subMarkIndex = i - 2;
+				subMarkIndex = i - 1;
+				break;
 			}
 		}
 		
 		cout << "\tmarkIndex: " << markIndex << endl;
 		cout << "\tsubMarkIndex: " << subMarkIndex << endl;
 				
-		cout << "\tmarks: " << lgmk->marks()[markIndex + 1] << endl;
-		cout << "\tsubMarks: " << lgmk->subMarks()[subMarkIndex + 1] << endl;
+		cout << "\tmarks: " << m_marks[markIndex] << endl;
+		cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
 		
-		mark  = QString::fromStdString(lgmk->marksNames()[markIndex + 1]);
-		subMark = QString::fromStdString(lgmk->subMarksNames()[subMarkIndex + 1]);
+		mark  = QString::fromStdString(m_marksNames[markIndex]);
+		subMark = QString::fromStdString(m_subMarksNames[subMarkIndex]);
 		
 		markLabel->setText(mark);
 		subMarkLabel->setText(subMark);
@@ -339,32 +344,24 @@ Ui_meta::synchronizeMarks()
 	{
 		cout << "SINCRONIZACÃO NIVEL 2!!!!" << endl;
 		
-		position = lgmk->subMarks()[subMarkIndex+1];
+		position = m_subMarks[subMarkIndex];
 		
-		for(uint32_t i = 0; i < lgmk->marks().size(); i++)
+		for(uint32_t i = 0; i < m_marks.size(); i++)
 		{
 			if(position == 0)
 			{
-				markIndex = -1;
-				
-				//mark  = QString::fromStdString(lgmk->marksNames()[markIndex + 1]);
-				//markLabel->setText(mark);
-				
-			}else if(lgmk->marks()[i] > position)
-			{
-				markIndex = i - 2;
-				
-				//mark  = QString::fromStdString(lgmk->marksNames()[markIndex]);
-				//markLabel->setText(mark);
-		
+				markIndex = 0;
 				break;
-			}else if(lgmk->marks()[i] == position )
+				
+			}else if(m_marks[i] > position)
 			{
 				markIndex = i - 1;
 				
-				//mark  = QString::fromStdString(lgmk->marksNames()[markIndex]);
-				//markLabel->setText(mark);
 		
+				break;
+			}else if(m_marks[i] == position )
+			{
+				markIndex = i;
 				break;
 			}
 		}
@@ -372,14 +369,78 @@ Ui_meta::synchronizeMarks()
 		cout << "\tmarkIndex: " << markIndex << endl;
 		cout << "\tsubMarkIndex: " << subMarkIndex << endl;
 		
-		cout << "\tmarks: " << lgmk->marks()[markIndex + 1] << endl;
-		cout << "\tsubMarks: " << lgmk->subMarks()[subMarkIndex + 1] << endl;
+		cout << "\tmarks: " << m_marks[markIndex] << endl;
+		cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
 		
-		mark  = QString::fromStdString(lgmk->marksNames()[markIndex + 1]);
-		subMark = QString::fromStdString(lgmk->subMarksNames()[subMarkIndex + 1]);
+		mark  = QString::fromStdString(m_marksNames[markIndex]);
+		subMark = QString::fromStdString(m_subMarksNames[subMarkIndex]);
 		
 		markLabel->setText(mark);
 		subMarkLabel->setText(subMark);
 	}
 }
+
+int 
+Ui_meta::MarkIndex() const
+{
+	return markIndex;
+}
+	
+int 
+Ui_meta::SubMarkIndex() const
+{
+	return subMarkIndex;
+}
+	
+void 
+Ui_meta::setMarkIndex(int newMarkIndex)
+{
+	if(markIndex != newMarkIndex)
+		markIndex = newMarkIndex;
+}
+	
+void 
+Ui_meta::setSubMarkIndex(int newSubMarkIndex)
+{
+	if(subMarkIndex != newSubMarkIndex)
+		subMarkIndex = newSubMarkIndex;
+}
+	
+Lgmk *
+Ui_meta::getLgmk() const
+{
+	return lgmk;
+}
+
+Format *
+Ui_meta::getFormat() const
+{
+	return format;
+}
+
+vector<uint32_t> 
+Ui_meta::marks() const
+{
+	return m_marks;
+}
+
+vector<uint32_t> 
+Ui_meta::subMarks() const
+{
+	return m_subMarks;
+}
+
+void 
+Ui_meta::changeMarksLabels()
+{	
+	QString mark;
+	QString subMark;
+	
+	mark  = QString::fromStdString(m_marksNames[markIndex]);
+	subMark = QString::fromStdString(m_subMarksNames[subMarkIndex]);
+	
+	markLabel->setText(mark);
+	subMarkLabel->setText(subMark);	
+}
+
 
