@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>442</height>
+    <height>445</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -122,6 +122,13 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="levelLabel">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Level&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -286,20 +293,9 @@
      <string>Player</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
-    <addaction name="actionSave_As_2"/>
     <addaction name="separator"/>
-    <addaction name="actionRecent_Files"/>
-   </widget>
-   <widget class="QMenu" name="menuAbout">
-    <property name="title">
-     <string>About</string>
-    </property>
-    <addaction name="actionThis_Player"/>
    </widget>
    <addaction name="menuPlayer"/>
-   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
@@ -315,7 +311,7 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open File</string>
    </property>
   </action>
   <action name="actionSave">

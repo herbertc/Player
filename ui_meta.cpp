@@ -96,9 +96,24 @@ Ui_meta::setMarksLabels()
 	markLabel->setAlignment(Qt::AlignCenter);
 	
 	QString firstSubMark  = QString::fromStdString(m_subMarksNames[0]);
-	
 	subMarkLabel->setText(firstSubMark);
 	subMarkLabel->setAlignment(Qt::AlignCenter);
+	
+	QString level = QString::fromStdString("Level 1");
+	levelLabel->setText(level);
+	levelLabel->setAlignment(Qt::AlignCenter);
+}
+
+void 
+Ui_meta::initLCDDisplay()
+{
+	lcdNumber->display(QString::fromStdString("0:00"));
+}
+
+void 
+Ui_meta::initSlider()
+{
+	songSlider->setRange(0, duration);
 }
 
 void
@@ -116,8 +131,9 @@ Ui_meta::connections()
 	
 	connect(fastrewindButton, SIGNAL(pressed()) , this, SLOT(fastRewind()));
 	
+	connect(songSlider, SIGNAL(valueChanged(int)) , this, SLOT(updateClock(int)));
+	connect(songSlider, SIGNAL(valueChanged(int)) , this, SLOT(change_song_position(int)));
 }
-
 
 void
 Ui_meta::playOrPause()
@@ -158,9 +174,21 @@ Ui_meta::resetMarkLabels()
 }
 
 void 
+Ui_meta::resetClockAndSlider()
+{
+	songSlider->setValue(0);
+	lcdNumber->display(QString::fromStdString("0:00"));
+	
+}
+
+void 
 Ui_meta::levelUp()
 {
 	level = 1;
+	
+	QString nivelLabel = QString::fromStdString("Level 1");
+	levelLabel->setText(nivelLabel);
+	
 	cout << "NIVEL "<< level << endl;
 }
 
@@ -168,6 +196,10 @@ void
 Ui_meta::levelDown()
 {
 	level = 2;
+	
+	QString nivelLabel = QString::fromStdString("Level 2");
+	levelLabel->setText(nivelLabel);
+	
 	cout << "NIVEL "<< level << endl;
 }
 
@@ -443,4 +475,25 @@ Ui_meta::changeMarksLabels()
 	subMarkLabel->setText(subMark);	
 }
 
+void 
+Ui_meta::updateClock(int time)
+{
+	int minutes = time/60;
+	int seconds = time - 60*minutes;
 
+	if(seconds < 10)
+		string_stream << minutes + '\0'<< ":0"<< seconds + '\0' << endl;
+	else
+		string_stream << minutes + '\0'<< ":"<< seconds + '\0' << endl;
+	
+	lcdNumber->display(QString::fromStdString(string_stream.str()));
+	songSlider->setValue(time);
+}
+
+
+void 
+Ui_meta::change_song_position(int time)
+{
+	//cout << "ANDEI pelo slider"<< endl;
+	emit update_m_position((uint32_t) time, format);
+}

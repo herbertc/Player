@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
 	uim->setupUi(&w);
 	uim->setMetaLabels();
 	uim->setMarksLabels();
+	uim->initLCDDisplay();
+	uim->initSlider();
 	uim->connections();
 
 	//----------------------------------------------------

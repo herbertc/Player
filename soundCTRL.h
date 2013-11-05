@@ -22,16 +22,22 @@ class SoundCTRL : public QObject
 	 
 public slots:
 	void playOrPauseCTRL();
+	
 	void forward(uint32_t timeInSeconds, Format *format);
 	void rewind(uint32_t timeInSeconds, Format *format);
+	void set_m_position(uint32_t timeInSeconds, Format *format);
 	
 	void fastForward(Format *format);
 	void fastRewind(Format *format);
+	
+	
 		
 signals:
 	void soundPlayed();
 	
 	void changeAllMarks();
+	
+	void clock(int time);
 	
 
 public:

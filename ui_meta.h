@@ -1,6 +1,8 @@
 #ifndef UI_META_H
 #define UI_META_H
 
+#include <sstream>
+
 #include "ui_player.h"
 
 #include "generic.h"
@@ -16,6 +18,7 @@ class Ui_meta : public QObject, public Ui_Player
 public slots:
 	void playOrPause();
 	void resetMarkLabels();
+	void resetClockAndSlider();
 
 	void fastForward();
 	void fastRewind();
@@ -27,6 +30,9 @@ public slots:
 	void levelDown();
 	
 	void changeMarksLabels();
+	
+	void updateClock(int time);
+	void change_song_position(int time);
 
 signals:
 	void playSound();
@@ -39,11 +45,15 @@ signals:
 	void rewindTime(Format *format);
 	
 	void remove();
+	
+	void update_m_position(uint32_t time, Format* format);
 
 public:
 	Ui_meta(const char *path);
 	void setMetaLabels();
 	void setMarksLabels();
+	void initLCDDisplay();
+	void initSlider();
 	void connections();
 	bool playing;
 	
@@ -85,6 +95,7 @@ private:
 	Format *format;
 	
 	QIcon icon;
+	stringstream string_stream;
 };
 
 

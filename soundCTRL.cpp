@@ -29,6 +29,7 @@ SoundCTRL::setView(Ui_meta *view)
 	
 	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(playOrPause()));
 	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(resetMarkLabels()));
+	connect(this, SIGNAL(soundPlayed()), this->view, SLOT(resetClockAndSlider()));
 	
 	connect(this, SIGNAL(changeAllMarks()), this->view, SLOT(changeMarksLabels()));
 	
@@ -37,6 +38,11 @@ SoundCTRL::setView(Ui_meta *view)
 	
 	connect(view, SIGNAL(forwardTime(Format *)), this, SLOT(fastForward(Format *)));
 	connect(view, SIGNAL(rewindTime(Format *)), this, SLOT(fastRewind(Format *)));
+	
+	connect(this, SIGNAL(clock(int)), this->view, SLOT(updateClock(int)));
+	
+	connect(view, SIGNAL(update_m_position(uint32_t, Format*)), this, SLOT(set_m_position(uint32_t, Format*)));
+	
 }
 
 void 
@@ -85,8 +91,8 @@ SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 	sound->m_position += nextSamplesLength;
 	
 	g_control->changeLabels();
+	
 }
-
 
 void 
 SoundCTRL::fastForward(Format *format)
@@ -107,6 +113,8 @@ void
 SoundCTRL::fastRewind(Format *format)
 {
 	cout << "VOLTEI!!"<< endl;
+	
+	cout << "sound->m_position: " << sound->m_position << endl;
 	
 	if(sound->m_position <= 0)
 	{
@@ -139,10 +147,17 @@ SoundCTRL::forward(uint32_t timeInSeconds, Format *format)
 	sound->m_position = position;
 }
 
+void 
+SoundCTRL::set_m_position(uint32_t timeInSeconds, Format *format)
+{
+	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
+	sound->m_position = position;
+}
+
 uint32_t update_mark(const vector<uint32_t>& marks, int timeInSeconds)
 {
 	
-	for (int i = 1; i < (int )marks.size(); i++)
+	for (int i = 1; i < (int) marks.size(); i++)
 	{
 		if ((int) marks[i] > timeInSeconds)
 			return i - 1;
@@ -185,6 +200,7 @@ SoundCTRL::changeLabels()
 	}
 	
 	emit changeAllMarks();
+	emit clock((int) timeInSeconds);
 }
 
 
