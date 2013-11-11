@@ -142,13 +142,13 @@ Lgmk::decode(const Data& data, uint32_t offset)
 	
 	uint32_t temp_size;
 	
-	cout << "Marks Names: " <<marksNames <<endl;
+	//cout << "Marks Names: " <<marksNames <<endl;
 	for(uint32_t i = 0; i < marksNames; i++)
 	{
 		memcpy(&temp_size, iterator + decoded, 4);
 		decoded += 4;
 
-		cout << "temp_size: "<< temp_size <<endl;
+		//cout << "temp_size: "<< temp_size <<endl;
 		
 		char *temp_char = new char[temp_size + 1];
 		
@@ -160,7 +160,7 @@ Lgmk::decode(const Data& data, uint32_t offset)
 			
 			string mark(temp_char);
 	
-			cout <<"temp_char: {" << mark << "}"<<endl;
+			//cout <<"temp_char: {" << mark << "}"<<endl;
 			
 			m_marksNames.push_back(mark);
 			
@@ -178,13 +178,13 @@ Lgmk::decode(const Data& data, uint32_t offset)
 	
 	uint32_t temp_size2;
 	
-	cout << "SubMarks Names: " << subMarksNames <<endl;
+	//cout << "SubMarks Names: " << subMarksNames <<endl;
 	for(uint32_t i = 0; i < subMarksNames; i++)
 	{
 		memcpy(&temp_size2, iterator + decoded, 4);
 		decoded += 4;
 
-		cout << "temp_size2: "<< temp_size2 <<endl;
+		//cout << "temp_size2: "<< temp_size2 <<endl;
 		
 		char *temp_char = new char[temp_size2 + 1];
 		
@@ -196,7 +196,7 @@ Lgmk::decode(const Data& data, uint32_t offset)
 			
 			string mark(temp_char);
 	
-			cout <<"temp_char: {" << mark << "}"<<endl;
+			//cout <<"temp_char: {" << mark << "}"<<endl;
 			
 			m_subMarksNames.push_back(mark);
 			

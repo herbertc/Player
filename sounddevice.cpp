@@ -71,7 +71,7 @@ SoundDevice::openWAV(char *path)
 		return;
 	}
 	
-	cout << "SDL_LoadWAV: Ok!" << endl;
+	//cout << "SDL_LoadWAV: Ok!" << endl;
 }
 
 void 
@@ -120,7 +120,7 @@ SoundDevice::audioConverter()
 	
 	SDL_FreeWAV(m_wavBuffer);
 
-	cout << "audioConverter(): Ok!" << endl;
+	//cout << "audioConverter(): Ok!" << endl;
 }
 
 void 
@@ -134,7 +134,7 @@ SoundDevice::setSound(Sound *sound)
 	
 	SDL_UnlockAudio();
 	
-	cout << "setSound: Ok!" << endl;
+	//cout << "setSound: Ok!" << endl;
 }
 
 

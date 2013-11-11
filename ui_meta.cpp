@@ -12,7 +12,7 @@ Ui_meta::Ui_meta(const char *path)
 
 	wave = Wave::load(path);
 	
-	cout << wave <<endl;
+	//cout << wave <<endl;
 	
 	vector<Chunk *> subchunks = wave->subchunks();
 	
@@ -107,7 +107,8 @@ Ui_meta::setMarksLabels()
 void 
 Ui_meta::initLCDDisplay()
 {
-	lcdNumber->display(QString::fromStdString("0:00"));
+	lcdNumber->setNumDigits(7);
+	lcdNumber->display(QString::fromStdString("0.00:00"));	
 }
 
 void 
@@ -138,7 +139,7 @@ Ui_meta::connections()
 void
 Ui_meta::playOrPause()
 {
-	cout << "[Play or pause] pĺaying = " << playing << endl;
+	//cout << "[Play or pause] pĺaying = " << playing << endl;
 
    	if(playing)
 	{
@@ -177,7 +178,7 @@ void
 Ui_meta::resetClockAndSlider()
 {
 	songSlider->setValue(0);
-	lcdNumber->display(QString::fromStdString("0:00"));
+	lcdNumber->display(QString::fromStdString("0.00:00"));
 	
 }
 
@@ -189,7 +190,7 @@ Ui_meta::levelUp()
 	QString nivelLabel = QString::fromStdString("Level 1");
 	levelLabel->setText(nivelLabel);
 	
-	cout << "NIVEL "<< level << endl;
+	//cout << "NIVEL "<< level << endl;
 }
 
 void 
@@ -200,14 +201,14 @@ Ui_meta::levelDown()
 	QString nivelLabel = QString::fromStdString("Level 2");
 	levelLabel->setText(nivelLabel);
 	
-	cout << "NIVEL "<< level << endl;
+	//cout << "NIVEL "<< level << endl;
 }
 
 
 void
 Ui_meta::fastForward()
 {
-	cout << "FAST FORWARD" << endl;
+	//cout << "FAST FORWARD" << endl;
 		
 	emit forwardTime(format);
 }
@@ -216,7 +217,7 @@ Ui_meta::fastForward()
 void
 Ui_meta::fastRewind()
 {
-	cout << "FAST REWIND" << endl;
+	//cout << "FAST REWIND" << endl;
 	
 	emit rewindTime(format);
 }
@@ -224,7 +225,7 @@ Ui_meta::fastRewind()
 void
 Ui_meta::next()
 {
-	cout << "NIVEL "<< level << endl;
+	//cout << "NIVEL "<< level << endl;
 	if(level == 1)
 	{
 		forward();
@@ -239,7 +240,7 @@ Ui_meta::next()
 void
 Ui_meta::prev()
 {
-	cout << "NIVEL "<< level << endl;
+	//cout << "NIVEL "<< level << endl;
 	if(level == 1)
 	{
 		rewind();
@@ -255,7 +256,7 @@ void
 Ui_meta::forward()
 {
 	markIndex++;
-	cout << "(forward) markIndex: " << markIndex <<endl;
+	//cout << "(forward) markIndex: " << markIndex <<endl;
 	
 	if(markIndex >= (int) m_marks.size())
 	{
@@ -273,7 +274,7 @@ void
 Ui_meta::rewind()
 {
 	markIndex--;
-	cout << "(rewind) markIndex: " << markIndex <<endl;
+	//cout << "(rewind) markIndex: " << markIndex <<endl;
 	
 	QString mark;
 	
@@ -293,7 +294,7 @@ void
 Ui_meta::forwardSubMark()
 {
 	subMarkIndex++;
-	cout << "(forward SubMark) subMarkIndex: " << subMarkIndex <<endl;
+	//cout << "(forward SubMark) subMarkIndex: " << subMarkIndex <<endl;
 	
 	if(subMarkIndex >= (int) m_subMarks.size())
 	{
@@ -311,7 +312,7 @@ void
 Ui_meta::rewindSubMark()
 {
 	subMarkIndex--;
-	cout << "(rewind SubMark) subMarkIndex: " << subMarkIndex <<endl;
+	//cout << "(rewind SubMark) subMarkIndex: " << subMarkIndex <<endl;
 	
 	QString subMark;
 	
@@ -338,7 +339,7 @@ Ui_meta::synchronizeMarks()
 	
 	if(level == 1)
 	{
-		cout << "SINCRONIZACÃO NIVEL 1!!!!" << endl;
+		// << "SINCRONIZACÃO NIVEL 1!!!!" << endl;
 		
 		position = m_marks[markIndex];
 		
@@ -360,11 +361,11 @@ Ui_meta::synchronizeMarks()
 			}
 		}
 		
-		cout << "\tmarkIndex: " << markIndex << endl;
-		cout << "\tsubMarkIndex: " << subMarkIndex << endl;
+		//cout << "\tmarkIndex: " << markIndex << endl;
+		//cout << "\tsubMarkIndex: " << subMarkIndex << endl;
 				
-		cout << "\tmarks: " << m_marks[markIndex] << endl;
-		cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
+		//cout << "\tmarks: " << m_marks[markIndex] << endl;
+		//cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
 		
 		mark  = QString::fromStdString(m_marksNames[markIndex]);
 		subMark = QString::fromStdString(m_subMarksNames[subMarkIndex]);
@@ -374,7 +375,7 @@ Ui_meta::synchronizeMarks()
 		
 	}else if(level == 2)
 	{
-		cout << "SINCRONIZACÃO NIVEL 2!!!!" << endl;
+		//cout << "SINCRONIZACÃO NIVEL 2!!!!" << endl;
 		
 		position = m_subMarks[subMarkIndex];
 		
@@ -398,11 +399,11 @@ Ui_meta::synchronizeMarks()
 			}
 		}
 		
-		cout << "\tmarkIndex: " << markIndex << endl;
-		cout << "\tsubMarkIndex: " << subMarkIndex << endl;
+		//cout << "\tmarkIndex: " << markIndex << endl;
+		//cout << "\tsubMarkIndex: " << subMarkIndex << endl;
 		
-		cout << "\tmarks: " << m_marks[markIndex] << endl;
-		cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
+		//cout << "\tmarks: " << m_marks[markIndex] << endl;
+		////cout << "\tsubMarks: " << m_subMarks[subMarkIndex] << endl;
 		
 		mark  = QString::fromStdString(m_marksNames[markIndex]);
 		subMark = QString::fromStdString(m_subMarksNames[subMarkIndex]);
@@ -478,14 +479,28 @@ Ui_meta::changeMarksLabels()
 void 
 Ui_meta::updateClock(int time)
 {
-	int minutes = time/60;
-	int seconds = time - 60*minutes;
-
-	if(seconds < 10)
-		string_stream << minutes + '\0'<< ":0"<< seconds + '\0' << endl;
-	else
-		string_stream << minutes + '\0'<< ":"<< seconds + '\0' << endl;
+	int hours = time/3600;
+	int minutes = time/60 - 60*hours;
+	int seconds = time - 60*minutes - 3600*hours;
 	
+	string_stream << hours + '\0' << ".";
+	
+	if(minutes < 10)
+	{
+		string_stream << "0" << minutes + '\0' << ":";
+	} else
+	{
+		string_stream << minutes + '\0' << ":";
+	}
+	
+	if(seconds < 10)
+	{
+		string_stream << "0" << seconds + '\0';
+	} else
+	{
+		string_stream << seconds + '\0';
+	}
+		
 	lcdNumber->display(QString::fromStdString(string_stream.str()));
 	songSlider->setValue(time);
 }

@@ -48,7 +48,7 @@ SoundCTRL::setView(Ui_meta *view)
 void 
 SoundCTRL::playOrPauseCTRL()
 {
-	cout << "[Toca ou para] playing = " << playing << endl;
+	//cout << "[Toca ou para] playing = " << playing << endl;
 
 	if (sound->m_position == -1)
 		sound->m_position = 0;
@@ -69,8 +69,8 @@ SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 
 	if (sound->m_position >= sound->size())
 	{
-		cout << "-----------------------------" << endl;
-		cout << "ACABOU...A MUSICA!!!" << endl;
+		//cout << "-----------------------------" << endl;
+		//cout << "ACABOU...A MUSICA!!!" << endl;
 
 		sound->m_position = -1;
 
@@ -97,7 +97,7 @@ SoundCTRL::callback(void *userdata, uint8_t *audio, int length)
 void 
 SoundCTRL::fastForward(Format *format)
 {
-	cout << "AVANCEI!!"<< endl;
+	//cout << "AVANCEI!!"<< endl;
 	if(sound->m_position <= 0)
 	{
 		sound->m_position = 0;
@@ -112,11 +112,12 @@ SoundCTRL::fastForward(Format *format)
 void 
 SoundCTRL::fastRewind(Format *format)
 {
-	cout << "VOLTEI!!"<< endl;
+	//cout << "VOLTEI!!"<< endl;
 	
-	cout << "sound->m_position: " << sound->m_position << endl;
+	//cout << "sound->m_position: " << sound->m_position << endl;
 	
-	if(sound->m_position <= 0)
+	//pra evitar falha de segmentação
+	if(sound->m_position <= 0 || sound->m_position <= (int)(5 * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8))
 	{
 		sound->m_position = 0;
 	}
@@ -130,7 +131,7 @@ SoundCTRL::fastRewind(Format *format)
 void 
 SoundCTRL::rewind(uint32_t timeInSeconds, Format *format)
 {
-	cout << "rewind control: " << timeInSeconds << endl;
+	//cout << "rewind control: " << timeInSeconds << endl;
 	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
 	
 	sound->m_position = position;
@@ -139,10 +140,10 @@ SoundCTRL::rewind(uint32_t timeInSeconds, Format *format)
 void 
 SoundCTRL::forward(uint32_t timeInSeconds, Format *format)
 {
-	cout << "forward control: " << timeInSeconds << endl;
+	//cout << "forward control: " << timeInSeconds << endl;
 	uint32_t position = timeInSeconds * format->numChannels() * format->sampleRate() * format->bitsPerSample()/8;
 	
-	cout << "position: " << position << endl; 
+	//cout << "position: " << position << endl; 
 	
 	sound->m_position = position;
 }
@@ -177,13 +178,13 @@ SoundCTRL::changeLabels()
 	vector<uint32_t> marks = view->marks();
 	vector<uint32_t> subMarks = view->subMarks();
 
-	cout << "Subs = [";
+	/*cout << "Subs = [";
 	for (int i = 0; i < (int )subMarks.size(); i++)
 		cout << subMarks[i] << " ";
 	cout << "]" << endl;
-	
+	*/
 	uint32_t now = update_mark(marks, timeInSeconds);
-	cout << "timeInSeconds: " << timeInSeconds << ", nextMark: "<< nextMark<< "," << "nextSubMark: "<< nextSubMark << ", now = " << now << endl;
+	//cout << "timeInSeconds: " << timeInSeconds << ", nextMark: "<< nextMark<< "," << "nextSubMark: "<< nextSubMark << ", now = " << now << endl;
 	
 	if (now != (uint32_t) nextMark)
 	{
@@ -192,7 +193,7 @@ SoundCTRL::changeLabels()
 
 	now = update_mark(subMarks, timeInSeconds);
 
-	cout << "Novo now = " << now << endl;
+	//cout << "Novo now = " << now << endl;
 	
 	if (now != (uint32_t) nextSubMark)
 	{
