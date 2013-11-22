@@ -12,8 +12,6 @@ Ui_meta::Ui_meta(const char *path)
 
 	wave = Wave::load(path);
 	
-	//cout << wave <<endl;
-	
 	vector<Chunk *> subchunks = wave->subchunks();
 	
 	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
@@ -23,12 +21,6 @@ Ui_meta::Ui_meta(const char *path)
 		if(lgmk != 0)
 			break;
 	}
-	
-	m_marks = lgmk->marks();
-	m_marksNames = lgmk->marksNames();
-	
-	m_subMarks = lgmk->subMarks();
-	m_subMarksNames = lgmk->subMarksNames();
 	
 	for(vector<Chunk *>::iterator it = subchunks.begin(); it != subchunks.end(); it++)
 	{
@@ -48,10 +40,33 @@ Ui_meta::Ui_meta(const char *path)
 		
 		if(format != 0)
 			break;
-	}	
+	}
 	
 	duration /= (format->sampleRate() * format->numChannels());
 	duration /= (format->bitsPerSample()/8);
+	
+	if(lgmk == 0)
+	{		
+		lgmk = new Lgmk;
+		
+		lgmk->add_mark(0);
+		lgmk->add_markName("NONE");
+		
+		lgmk->add_mark(duration);
+		lgmk->add_markName("NONE");
+		
+		lgmk->add_subMark(0);
+		lgmk->add_subMarkName("NONE");
+		
+		lgmk->add_subMark(duration);
+		lgmk->add_subMarkName("NONE");
+	}
+	
+	m_marks = lgmk->marks();
+	m_marksNames = lgmk->marksNames();
+	
+	m_subMarks = lgmk->subMarks();
+	m_subMarksNames = lgmk->subMarksNames();
 }
 
 void 
@@ -69,7 +84,9 @@ Ui_meta::setMetaLabels()
 	}
 	
 	if(meta == 0)
-		return;
+	{
+		meta = new Meta;
+	}
 	
 	QString title = QString::fromStdString(meta->title());
 	QString author = QString::fromStdString(meta->author());
@@ -108,6 +125,7 @@ void
 Ui_meta::initLCDDisplay()
 {
 	lcdNumber->setNumDigits(7);
+	lcdNumber->setPalette(Qt::black);
 	lcdNumber->display(QString::fromStdString("0.00:00"));	
 }
 
@@ -139,8 +157,6 @@ Ui_meta::connections()
 void
 Ui_meta::playOrPause()
 {
-	//cout << "[Play or pause] pĺaying = " << playing << endl;
-
    	if(playing)
 	{
 		icon.addFile(QString::fromUtf8(":/images/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -178,8 +194,8 @@ void
 Ui_meta::resetClockAndSlider()
 {
 	songSlider->setValue(0);
+	lcdNumber->setPalette(Qt::black);
 	lcdNumber->display(QString::fromStdString("0.00:00"));
-	
 }
 
 void 
@@ -189,8 +205,6 @@ Ui_meta::levelUp()
 	
 	QString nivelLabel = QString::fromStdString("Level 1");
 	levelLabel->setText(nivelLabel);
-	
-	//cout << "NIVEL "<< level << endl;
 }
 
 void 
