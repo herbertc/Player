@@ -3,8 +3,8 @@
 #include <SDL/SDL.h>
 #include <QApplication>
 
-#include "sound.h"
 #include "sounddevice.h"
+//#include "sound.h"
 #include "player.h"
 #include "ui_meta.h"
 

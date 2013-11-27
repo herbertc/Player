@@ -2,8 +2,8 @@
 #define SOUNDDEVICE_H
 
 #include <SDL/SDL.h>
-#include "sound.h"
 #include "soundCTRL.h"
+#include "sound.h"
 
 using namespace std;
 
